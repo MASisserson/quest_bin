@@ -10,13 +10,25 @@ db.connect()
     console.log('ERROR:', error.message || error);
   });
 
+const getAllRequestBins = async () => {
+  return await db.manyOrNone('SELECT uuid FROM requestbin');
+}
 
 const insertRequestData = async (uuid, requestData) => {
   return await db.none('INSERT INTO request (requestbin_id, request_body) VALUES ($1, $2)', [uuid, requestData])
 };
 
-const read = async () => {
+const getAllRequests = async () => {
   return await db.manyOrNone('SELECT request_body FROM request ORDER BY id DESC');
 };
 
-module.exports = { insertRequestData, read }
+const getRequestsForRequestBin = async (requestBinId) => {
+  return await db.manyOrNone('SELECT request_body FROM request WHERE requestbin_id = $1', requestBinId);
+}
+
+module.exports = {
+  insertRequestData,
+  getAllRequests,
+  getAllRequestBins,
+  getRequestsForRequestBin
+}
