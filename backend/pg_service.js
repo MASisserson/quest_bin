@@ -10,25 +10,26 @@ db.connect()
     console.log('ERROR:', error.message || error);
   });
 
-const getAllRequestBins = async () => {
-  return await db.manyOrNone('SELECT uuid FROM requestbin');
+const getAllEndpoints = async () => {
+  return await db.manyOrNone('SELECT uuid FROM endpoint');
 }
 
 const insertRequestData = async (uuid, requestData) => {
-  return await db.none('INSERT INTO request (requestbin_id, request_body) VALUES ($1, $2)', [uuid, requestData])
+  return await db.none('INSERT INTO request (endpoint_id, request_data) VALUES ($1, $2)', [uuid, requestData])
 };
 
 const getAllRequests = async () => {
-  return await db.manyOrNone('SELECT request_body FROM request ORDER BY id DESC');
+  return await db.manyOrNone('SELECT endpoint.uuid, request.id, time_stamp, request_data FROM request JOIN endpoint ON request.endpoint_id = endpoint.id ORDER BY id DESC');
 };
 
-const getRequestsForRequestBin = async (requestBinId) => {
-  return await db.manyOrNone('SELECT request_body FROM request WHERE requestbin_id = $1', requestBinId);
+const getRequestsForEndpoint = async (endpointId) => {
+  return await db.manyOrNone('SELECT request_data FROM request WHERE endpoint_id = $1', endpointId);
 }
 
 module.exports = {
   insertRequestData,
   getAllRequests,
-  getAllRequestBins,
-  getRequestsForRequestBin
+  getAllEndpoints,
+  getRequestsForEndpoint
 }
+

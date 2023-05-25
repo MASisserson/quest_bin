@@ -31,7 +31,7 @@ const FeedPage = () => {
 const RequestList = ({ requests }) => {
   const requestLineItems = () => {
     return requests.map(request => {
-      return (<li>{request.request_body.method}</li>)
+      return (<li>{request.request_data.method}</li>)
     })
   }
 
