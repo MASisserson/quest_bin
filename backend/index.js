@@ -21,10 +21,22 @@ app.post('/questbin', async (req, res) => {
   res.sendStatus(200);
 });
 
-app.get('/questbin/test', async (req, res) => {
+app.get('/requests', async (req, res) => {
   // Get data from the request table in inverted order
-  let readout = await pg_service.read();
+  let readout = await pg_service.getAllRequests();
   res.send(readout);
+});
+
+app.get('/requestbins/', async (req, res) => {
+  const requestBins = await pg_service.getAllRequestBins()
+  res.send(requestBins);
+
+  // Get reqeuests for an individual endpoint
+});
+
+app.get('/requests/:id', async (req, res) => {
+  // Get reqeuests for an individual endpoint
+
 });
 
 const PORT = 3001;
