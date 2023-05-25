@@ -3,8 +3,10 @@ dotenv.config();
 const express = require('express');
 const app = express();
 const pg_service = require('./pg_service');
+const cors = require('cors');
 
 app.use(express.json());
+app.use(cors());
 
 app.post('/questbin', async (req, res) => {
   // get the data from the request
@@ -24,7 +26,7 @@ app.post('/questbin', async (req, res) => {
 app.get('/requests', async (req, res) => {
   // Get data from the request table in inverted order
   let readout = await pg_service.getAllRequests();
-  res.send(readout);
+  res.json(readout);
 });
 
 app.get('/requestbins/', async (req, res) => {
