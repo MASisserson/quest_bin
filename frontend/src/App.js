@@ -110,8 +110,7 @@ const EndpointDetailPage = () => {
   const { id } = useParams();
   const [requests, setRequests] = useState([]);
   const [selectedRequest, setSelectedRequest] = useState(null);
-  const endpointURL = `${window.location.origin}/endpoints/${id}`
-
+  const endpointURL = `${window.location.origin}/endpoints/${id}`;
 
   useEffect(() => {
     const getEndpointRequests = async () => {
@@ -131,7 +130,6 @@ const EndpointDetailPage = () => {
   const handleRequestClick = async (requestId) => {
     const request = await axios.get(`http://localhost:3001/requests/${requestId}`);
     setSelectedRequest(request.data);
-    console.log(request.data);
   };
 
   return (
@@ -159,6 +157,10 @@ const EndpointDetailPage = () => {
 }
 
 const EndpointDetailSidebar = ({ requests, onRequestClick, selectedRequestId }) => {
+  if (requests.length === 0) {
+    return <p>No requests.</p>
+  }
+
   const requestLineItems = () => {
     return requests.map(request => {
       const { id, time_stamp, request_data } = request;
