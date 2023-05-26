@@ -110,6 +110,7 @@ const EndpointDetailPage = () => {
   const { id } = useParams();
   const [requests, setRequests] = useState([]);
   const [selectedRequest, setSelectedRequest] = useState(null);
+  const endpointURL = `${window.location.origin}/endpoints/${id}`
 
 
   useEffect(() => {
@@ -136,8 +137,8 @@ const EndpointDetailPage = () => {
   return (
     <section className='endpoint-detail-page'>
       <section>
-        <p>You endpoint is:</p>
-        <h3>http://localhost:3001/endpoints/{id}</h3>
+        <p>Your endpoint is:</p>
+        <h3>{endpointURL}</h3>
       </section>
       <section className='endpoint-detail-content'>
         <section className='endpoint-detail-sidebar'>
