@@ -1,3 +1,16 @@
+/* Box sizing border-box */
+html {
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -12,12 +25,45 @@ code {
     monospace;
 }
 
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.navigation {
+  border-bottom: 1px solid black;
+}
+
 .navigation ul{
   display: flex;
   gap: 20px;
   list-style: none; 
+  padding-left: 20px;
+}
+.home-page,
+.feed-page,
+.endpoints-page, 
+.endpoint-detail-page
+ {
+  padding-left: 20px;
 }
 
-h2 {
-  padding-left: 40px;;
+
+.request-item {
+  cursor: pointer;
+}
+
+
+.request-selected {
+  font-weight: bold;
+}
+
+.endpoint-detail-content {
+  display: flex;
+  gap: 20px;
+}
+
+.endpoint-detail-sidebar {
+  width: 310px;
 }

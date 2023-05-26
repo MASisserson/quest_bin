@@ -29,6 +29,11 @@ app.get('/requests', async (req, res) => {
   res.json(requests);
 });
 
+app.get('/requests/:id', async (req, res) => {
+  const request = await pg_service.getRequestById(req.params.id);
+  res.json(request);
+});
+
 app.get('/endpoints/', async (req, res) => {
   const endpoints = await pg_service.getAllEndpoints()
   res.send(endpoints);

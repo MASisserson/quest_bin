@@ -22,13 +22,18 @@ const getAllRequests = async () => {
   return await db.manyOrNone('SELECT endpoint.id AS endpoint_id, endpoint.uuid, request.id, time_stamp, request_data FROM request JOIN endpoint ON request.endpoint_id = endpoint.id ORDER BY id DESC');
 };
 
+const getRequestById = async (requestId) => {
+  return await db.one('SELECT * FROM request WHERE id = $1', requestId);
+};
+
 const getRequestsForEndpoint = async (endpointId) => {
-  return await db.manyOrNone('SELECT request_data FROM request WHERE endpoint_id = $1', endpointId);
+  return await db.manyOrNone('SELECT request.id, time_stamp, request_data FROM request WHERE endpoint_id = $1', endpointId);
 }
 
 module.exports = {
   insertRequestData,
   getAllRequests,
+  getRequestById,
   getAllEndpoints,
   getRequestsForEndpoint
 }
