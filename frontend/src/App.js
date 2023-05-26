@@ -13,7 +13,7 @@ const FeedPage = () => {
       try {
         const response = await axios.get('http://localhost:3001/requests');
         setRequests(response.data);
-        console.log(response.data);
+        // console.log(response.data);
 
       } catch (error) {
         console.log("ERROR:", error);
@@ -21,29 +21,35 @@ const FeedPage = () => {
     }
 
     getAllRequests()
-  }, [])
+  }, []);
 
   return (
     <>
       <h2>Request Feed</h2>
       <RequestList requests={requests} />
     </>
-  )
-}
+  );
+};
 
 const RequestList = ({ requests }) => {
   const requestLineItems = () => {
     return requests.map(request => {
-      return (<li key={request.id}>{request.request_data.method}</li>)
-    })
-  }
+      return (
+        <Link to={`/endpoints/${request.endpoint_id}`} key={request.id}>
+          <li key={request.id}>{request.request_data.method} {request.time_stamp} {request.uuid}</li>
+        </Link>
+      );
+    });
+  };
+
+  console.log(requests);
 
   return (
     <ul>
       {requestLineItems()}
     </ul>
-  )
-}
+  );
+};
 
 
 // ENDPOINTS ===================================================================
@@ -64,8 +70,8 @@ const EndpointsPage = () => {
       }
     }
 
-    getAllEndpoints()
-  }, [])
+    getAllEndpoints();
+  }, []);
 
   // const handleEndpointClick = (endpointId) => {
 
@@ -76,8 +82,8 @@ const EndpointsPage = () => {
       <h2>Endpoints</h2>
       <EndpointList endpoints={endpoints} />
     </>
-  )
-}
+  );
+};
 
 const EndpointList = ({ endpoints }) => {
   const endpointLineItems = () => {
@@ -86,16 +92,16 @@ const EndpointList = ({ endpoints }) => {
         <Link to={`/endpoints/${endpoint.id}`} key={endpoint.id}>
           <li >{endpoint.uuid}</li>
         </Link>
-      )
-    })
-  }
+      );
+    });
+  };
 
   return (
     <ul>
       {endpointLineItems()}
     </ul>
-  )
-}
+  );
+};
 
 // ENDPOINT DETAIL =============================================================
 
@@ -116,7 +122,7 @@ const EndpointDetailPage = () => {
     }
 
     getEndpointRequests();
-  }, [])
+  }, []);
 
   return (
     <>
@@ -126,8 +132,8 @@ const EndpointDetailPage = () => {
       {EndpointRequestSidebar({ requests })}
 
     </>
-  )
-}
+  );
+};
 
 const EndpointRequestSidebar = ({ requests }) => {
   console.log("in endpointrequestsidebar", requests);
@@ -135,15 +141,15 @@ const EndpointRequestSidebar = ({ requests }) => {
   const requestLineItems = () => {
     return requests.map(request => {
       return <li key={request.id}>{JSON.stringify(request)}</li>
-    })
+    });
   }
 
   return (
     <ul>
       {requestLineItems()}
     </ul>
-  )
-}
+  );
+};
 
 // APP =========================================================================
 
@@ -174,7 +180,7 @@ const App = () => {
         <Route path="/endpoints/:id" element={<EndpointDetailPage />} />
       </Routes>
     </>
-  )
-}
+  );
+};
 
 export default App;
