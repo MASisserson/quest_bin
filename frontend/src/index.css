@@ -21,3 +21,13 @@ code {
 h2 {
   padding-left: 40px;;
 }
+
+
+.request-item {
+  cursor: pointer;
+}
+
+
+.request-selected {
+  font-weight: bold;
+}
