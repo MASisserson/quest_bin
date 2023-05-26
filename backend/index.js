@@ -29,15 +29,13 @@ app.get('/requests', async (req, res) => {
   res.json(readout);
 });
 
-app.get('/requestbins/', async (req, res) => {
-  const requestBins = await pg_service.getAllRequestBins()
-  res.send(requestBins);
-
-  // Get reqeuests for an individual endpoint
+app.get('/endpoints/', async (req, res) => {
+  const endpoints = await pg_service.getAllEndpoints()
+  res.send(endpoints);
 });
 
 app.get('/requests/:id', async (req, res) => {
-  // Get reqeuests for an individual endpoint
+  // Get requests for an individual endpoint
 
 });
 

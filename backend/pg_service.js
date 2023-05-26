@@ -11,7 +11,7 @@ db.connect()
   });
 
 const getAllEndpoints = async () => {
-  return await db.manyOrNone('SELECT uuid FROM endpoint');
+  return await db.manyOrNone('SELECT id, uuid FROM endpoint');
 }
 
 const insertRequestData = async (uuid, requestData) => {
