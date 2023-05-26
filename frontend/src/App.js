@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { Routes, Route, Link } from "react-router-dom";
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import JsonView from 'react18-json-view'
+import 'react18-json-view/src/style.css'
+
 
 // FEED ====================================================================
 
@@ -135,6 +138,7 @@ const EndpointDetailPage = () => {
         onRequestClick={handleRequestClick}
         selectedRequestId={selectedRequest ? selectedRequest.id : null}
       />
+      <h3>Request Detail</h3>
       <EndpointDetailContent request={selectedRequest} />
     </>
   )
@@ -166,10 +170,15 @@ const EndpointDetailSidebar = ({ requests, onRequestClick, selectedRequestId }) 
 }
 
 const EndpointDetailContent = ({ request }) => {
+  if (!request) {
+    return <p>Select a request to see details</p>
+  }
+
   return (
     <div>
-      <h3>Request Detail</h3>
-      <p>{JSON.stringify(request)}</p>
+      <JsonView src={request} />
+
+      {/* <p>{JSON.stringify(request)}</p> */}
     </div>
   )
 }
