@@ -19,7 +19,7 @@ const insertRequestData = async (uuid, requestData) => {
 };
 
 const getAllRequests = async () => {
-  return await db.manyOrNone('SELECT endpoint.uuid, request.id, time_stamp, request_data FROM request JOIN endpoint ON request.endpoint_id = endpoint.id ORDER BY id DESC');
+  return await db.manyOrNone('SELECT endpoint.id AS endpoint_id, endpoint.uuid, request.id, time_stamp, request_data FROM request JOIN endpoint ON request.endpoint_id = endpoint.id ORDER BY id DESC');
 };
 
 const getRequestById = async (requestId) => {

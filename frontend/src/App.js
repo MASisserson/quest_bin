@@ -25,7 +25,7 @@ const FeedPage = () => {
       try {
         const response = await axios.get('http://localhost:3001/requests');
         setRequests(response.data);
-        console.log(response.data);
+        // console.log(response.data);
 
       } catch (error) {
         console.log("ERROR:", error);
@@ -33,7 +33,7 @@ const FeedPage = () => {
     }
 
     getAllRequests()
-  }, [])
+  }, []);
 
   return (
     <section className='feed-page'>
@@ -46,16 +46,22 @@ const FeedPage = () => {
 const RequestList = ({ requests }) => {
   const requestLineItems = () => {
     return requests.map(request => {
-      return (<li key={request.id}>{request.request_data.method}</li>)
-    })
-  }
+      return (
+        <Link to={`/endpoints/${request.endpoint_id}`} key={request.id}>
+          <li key={request.id}>{request.request_data.method} {request.time_stamp} {request.uuid}</li>
+        </Link>
+      );
+    });
+  };
+
+  console.log(requests);
 
   return (
     <ul>
       {requestLineItems()}
     </ul>
-  )
-}
+  );
+};
 
 
 // ENDPOINTS ===================================================================
@@ -75,13 +81,14 @@ const EndpointsPage = () => {
       }
     }
 
-    getAllEndpoints()
-  }, [])
+    getAllEndpoints();
+  }, []);
 
   return (
     <section className='endpoints-page'>
       <h2>Endpoints</h2>
       <EndpointList endpoints={endpoints} />
+
     </section>
   )
 }
@@ -93,16 +100,16 @@ const EndpointList = ({ endpoints }) => {
         <Link to={`/endpoints/${endpoint.id}`} key={endpoint.id}>
           <li >{endpoint.uuid}</li>
         </Link>
-      )
-    })
-  }
+      );
+    });
+  };
 
   return (
     <ul>
       {endpointLineItems()}
     </ul>
-  )
-}
+  );
+};
 
 // ENDPOINT DETAIL =============================================================
 
@@ -182,8 +189,8 @@ const EndpointDetailSidebar = ({ requests, onRequestClick, selectedRequestId }) 
     <ul>
       {requestLineItems()}
     </ul>
-  )
-}
+  );
+};
 
 const EndpointDetailContent = ({ request }) => {
   if (!request) {
@@ -223,7 +230,7 @@ const App = () => {
         <Route path="/endpoints/:id" element={<EndpointDetailPage />} />
       </Routes>
     </>
-  )
-}
+  );
+};
 
 export default App;
