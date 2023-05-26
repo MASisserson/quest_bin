@@ -6,6 +6,15 @@ import JsonView from 'react18-json-view'
 import 'react18-json-view/src/style.css'
 
 
+// HOME ====================================================================
+const HomePage = () => {
+  return (
+    <section className='home-page'>
+      <h2>Home</h2>
+    </section>
+  )
+}
+
 // FEED ====================================================================
 
 const FeedPage = () => {
@@ -27,10 +36,10 @@ const FeedPage = () => {
   }, [])
 
   return (
-    <>
+    <section className='feed-page'>
       <h2>Request Feed</h2>
       <RequestList requests={requests} />
-    </>
+    </section>
   )
 }
 
@@ -69,15 +78,11 @@ const EndpointsPage = () => {
     getAllEndpoints()
   }, [])
 
-  // const handleEndpointClick = (endpointId) => {
-
-  // }
-
   return (
-    <>
+    <section className='endpoints-page'>
       <h2>Endpoints</h2>
       <EndpointList endpoints={endpoints} />
-    </>
+    </section>
   )
 }
 
@@ -129,18 +134,26 @@ const EndpointDetailPage = () => {
   };
 
   return (
-    <>
-      <p>You endpoint is:</p>
-      <h3>http://localhost:3001/endpoints/{id}</h3>
-      <h2>Requests</h2>
-      <EndpointDetailSidebar
-        requests={requests}
-        onRequestClick={handleRequestClick}
-        selectedRequestId={selectedRequest ? selectedRequest.id : null}
-      />
-      <h3>Request Detail</h3>
-      <EndpointDetailContent request={selectedRequest} />
-    </>
+    <section className='endpoint-detail-page'>
+      <section>
+        <p>You endpoint is:</p>
+        <h3>http://localhost:3001/endpoints/{id}</h3>
+      </section>
+      <section className='endpoint-detail-content'>
+        <section className='endpoint-detail-sidebar'>
+          <h2>Requests</h2>
+          <EndpointDetailSidebar
+            requests={requests}
+            onRequestClick={handleRequestClick}
+            selectedRequestId={selectedRequest ? selectedRequest.id : null}
+          />
+        </section>
+        <section className='endpoint-detail-main'>
+          <h3>Request Detail</h3>
+          <EndpointDetailContent request={selectedRequest} />
+        </section>
+      </section>
+    </section>
   )
 }
 
@@ -177,8 +190,6 @@ const EndpointDetailContent = ({ request }) => {
   return (
     <div>
       <JsonView src={request} />
-
-      {/* <p>{JSON.stringify(request)}</p> */}
     </div>
   )
 }
@@ -203,7 +214,7 @@ const App = () => {
       </nav>
 
       <Routes>
-        <Route path="/" element={<h2>Home</h2>} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/feed" element={<FeedPage />} />
         <Route path="/endpoints" element={<EndpointsPage />} />
         <Route path="/endpoints/:id" element={<EndpointDetailPage />} />
