@@ -25,8 +25,8 @@ app.post('/questbin', async (req, res) => {
 
 app.get('/requests', async (req, res) => {
   // Get data from the request table in inverted order
-  let readout = await pg_service.getAllRequests();
-  res.json(readout);
+  let requests = await pg_service.getAllRequests();
+  res.json(requests);
 });
 
 app.get('/endpoints/', async (req, res) => {
@@ -34,9 +34,9 @@ app.get('/endpoints/', async (req, res) => {
   res.send(endpoints);
 });
 
-app.get('/requests/:id', async (req, res) => {
-  // Get requests for an individual endpoint
-
+app.get('/endpoints/:id/requests', async (req, res) => {
+  const requests = await pg_service.getRequestsForEndpoint(req.params.id);
+  res.send(requests);
 });
 
 const PORT = 3001;
