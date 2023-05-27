@@ -4,6 +4,7 @@ const express = require('express');
 const app = express();
 const pg_service = require('./pg_service');
 const cors = require('cors');
+const path = require('path');
 
 app.use(express.json());
 app.use(cors());
@@ -43,6 +44,10 @@ app.get('/endpoints/', async (req, res) => {
 app.get('/endpoints/:id/requests', async (req, res) => {
   const requests = await pg_service.getRequestsForEndpoint(req.params.id);
   res.send(requests);
+});
+
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'build', 'index.html'));
 });
 
 const PORT = process.env.PORT;

@@ -27,7 +27,7 @@ const getRequestById = async (requestId) => {
 };
 
 const getRequestsForEndpoint = async (endpointId) => {
-  return await db.manyOrNone('SELECT request.id, time_stamp, request_data FROM request WHERE endpoint_id = $1', endpointId);
+  return await db.manyOrNone('SELECT id, time_stamp, request_data FROM request WHERE endpoint_id = $1 ORDER BY id DESC', endpointId);
 }
 
 module.exports = {
