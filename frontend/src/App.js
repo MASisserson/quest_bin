@@ -23,7 +23,7 @@ const FeedPage = () => {
   useEffect(() => {
     const getAllRequests = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/requests');
+        const response = await axios.get('/requests');
         setRequests(response.data);
         // console.log(response.data);
 
@@ -72,7 +72,7 @@ const EndpointsPage = () => {
   useEffect(() => {
     const getAllEndpoints = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/endpoints');
+        const response = await axios.get('/endpoints');
         setEndpoints(response.data);
         console.log(response.data);
 
@@ -122,7 +122,7 @@ const EndpointDetailPage = () => {
   useEffect(() => {
     const getEndpointRequests = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/endpoints/${id}/requests`);
+        const response = await axios.get(`/endpoints/${id}/requests`);
         console.log(response.data);
 
         setRequests(response.data);
@@ -135,7 +135,7 @@ const EndpointDetailPage = () => {
   }, [id])
 
   const handleRequestClick = async (requestId) => {
-    const request = await axios.get(`http://localhost:3001/requests/${requestId}`);
+    const request = await axios.get(`/requests/${requestId}`);
     setSelectedRequest(request.data);
   };
 

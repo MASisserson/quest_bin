@@ -7,6 +7,7 @@ const cors = require('cors');
 
 app.use(express.json());
 app.use(cors());
+app.use(express.static('build'))
 
 app.post('/questbin', async (req, res) => {
   // get the data from the request
