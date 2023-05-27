@@ -25,32 +25,32 @@ app.post('/questbin', async (req, res) => {
   res.sendStatus(200);
 });
 
-app.get('/requests', async (req, res) => {
+app.get('/api/requests', async (req, res) => {
   // Get data from the request table in inverted order
   let requests = await pg_service.getAllRequests();
   res.json(requests);
 });
 
-app.get('/requests/:id', async (req, res) => {
+app.get('/api/requests/:id', async (req, res) => {
   const request = await pg_service.getRequestById(req.params.id);
   res.json(request);
 });
 
-app.get('/endpoints/', async (req, res) => {
+app.get('/api/endpoints/', async (req, res) => {
   const endpoints = await pg_service.getAllEndpoints()
-  res.send(endpoints);
+  res.json(endpoints);
 });
 
-app.get('/endpoints/:id/requests', async (req, res) => {
+app.get('/api/endpoints/:id/requests', async (req, res) => {
   const requests = await pg_service.getRequestsForEndpoint(req.params.id);
   res.send(requests);
 });
 
 app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'build', 'index.html'));
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
