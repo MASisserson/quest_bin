@@ -10,7 +10,9 @@ import 'react18-json-view/src/style.css'
 const HomePage = () => {
   return (
     <section className='home-page'>
-      <h2>Home</h2>
+      <section className='page-header'>
+        <h2>Home</h2>
+      </section>
     </section>
   )
 }
@@ -37,7 +39,9 @@ const FeedPage = () => {
 
   return (
     <section className='feed-page'>
-      <h2>Request Feed</h2>
+      <section className='page-header'>
+        <h2>Request Feed</h2>
+      </section>
       <RequestList requests={requests} />
     </section>
   )
@@ -47,9 +51,13 @@ const RequestList = ({ requests }) => {
   const requestLineItems = () => {
     return requests.map(request => {
       return (
-        <Link to={`/endpoints/${request.endpoint_id}`} key={request.id}>
-          <li key={request.id}>{request.request_data.method} {request.time_stamp} {request.uuid}</li>
-        </Link>
+        <li key={request.id}>
+          <Link to={`/endpoints/${request.endpoint_id}`} key={request.id}>
+            {request.request_data.method} {request.time_stamp} {request.uuid}
+          </Link>
+        </li>
+
+
       );
     });
   };
@@ -57,7 +65,7 @@ const RequestList = ({ requests }) => {
   console.log(requests);
 
   return (
-    <ul>
+    <ul className='request-feed-list'>
       {requestLineItems()}
     </ul>
   );
@@ -86,7 +94,10 @@ const EndpointsPage = () => {
 
   return (
     <section className='endpoints-page'>
-      <h2>Endpoints</h2>
+      <section className='page-header'>
+        <h2>Endpoints</h2>
+
+      </section>
       <EndpointList endpoints={endpoints} />
 
     </section>
