@@ -1,31 +1,22 @@
 import React, { useEffect, useState } from 'react'
-import { Routes, Route, Link, useParams, useNavigate } from "react-router-dom";
+import { Routes, Route, Link, useParams, useNavigate, NavLink } from "react-router-dom";
 import axios from 'axios';
 import JsonView from 'react18-json-view'
 import 'react18-json-view/src/style.css'
 
 
 // HOME ====================================================================
-const HomePage = () => {
-  const navigate = useNavigate();
-
-  const handleClick = async () => {
-    try {
-      const response = await axios.get('/api/createuuid');
-      const uuid = response.data;
-      navigate(`/endpoints/${uuid}`);
-    } catch (error) {
-      console.log("ERROR:", error);
-    }
-  }
-
+const HomePage = ({ handleClick }) => {
   return (
     <section className='home-page'>
       <section className='page-header'>
         <h2>Home</h2>
+        <Link to="#" onClick={handleClick}>Create URL Endpoint</Link>
       </section>
-      <section>
-        <Link to="#" onClick={handleClick}>Create Endpoint</Link>
+      <section className='home-page-content'>
+        <h1>Examine HTTP requests and webhooks</h1>
+        <p>Use a URL endpoint to capture HTTP or webhook requests and examine them using an intuitive UI</p>
+        <Link to="#" onClick={handleClick}>Create URL Endpoint</Link>
       </section>
     </section>
   )
@@ -33,7 +24,7 @@ const HomePage = () => {
 
 // FEED ====================================================================
 
-const FeedPage = () => {
+const FeedPage = ({ handleClick }) => {
   const [requests, setRequests] = useState([]);
 
   useEffect(() => {
@@ -55,6 +46,7 @@ const FeedPage = () => {
     <section className='feed-page'>
       <section className='page-header'>
         <h2>Request Feed</h2>
+        <Link to="#" onClick={handleClick}>Create URL Endpoint</Link>
       </section>
       <RequestList requests={requests} />
     </section>
@@ -98,7 +90,7 @@ const RequestList = ({ requests }) => {
 
 // ENDPOINTS ===================================================================
 
-const EndpointsPage = () => {
+const EndpointsPage = ({ handleClick }) => {
   const [endpoints, setEndpoints] = useState([]);
 
   useEffect(() => {
@@ -118,6 +110,7 @@ const EndpointsPage = () => {
     <section className='endpoints-page'>
       <section className='page-header'>
         <h2>Endpoints</h2>
+        <Link to="#" onClick={handleClick}>Create URL Endpoint</Link>
       </section>
       <EndpointList endpoints={endpoints} />
     </section>
@@ -125,6 +118,14 @@ const EndpointsPage = () => {
 }
 
 const EndpointList = ({ endpoints }) => {
+  if (endpoints.length === 0) {
+    return (
+      <section className='request-feed-list'>
+        <p>No endpoints. Click "Create URL Endpoint".</p>
+      </section>
+    )
+  }
+
   const endpointLineItems = () => {
     return endpoints.map(endpoint => {
       return (
@@ -146,7 +147,7 @@ const EndpointList = ({ endpoints }) => {
 
 // ENDPOINT DETAIL =============================================================
 
-const EndpointDetailPage = () => {
+const EndpointDetailPage = ({ handleClick }) => {
   const { uuid } = useParams();
   const [requests, setRequests] = useState([]);
   const [selectedRequest, setSelectedRequest] = useState(null);
@@ -176,6 +177,7 @@ const EndpointDetailPage = () => {
     <section className='endpoint-detail-page'>
       <section className='page-header'>
         <h2>Endpoint Detail</h2>
+        <Link to="#" onClick={handleClick}>Create URL Endpoint</Link>
       </section>
       <section className='current-endpoint'>
         <p>Your endpoint is:</p>
@@ -248,27 +250,42 @@ const EndpointDetailContent = ({ request }) => {
 // APP =========================================================================
 
 const App = () => {
+  const navigate = useNavigate();
+
+  const handleClick = async () => {
+    try {
+      const response = await axios.get('/api/createuuid');
+      const uuid = response.data;
+      navigate(`/endpoints/${uuid}`);
+    } catch (error) {
+      console.log("ERROR:", error);
+    }
+  }
+
   return (
     <>
       <nav className='navigation'>
         <ul>
-          <li>
-            <Link to="/">Home</Link>
+          <li className='questbin'>
+            QUESTBIN
           </li>
           <li>
-            <Link to="/feed">Feed</Link>
+            <NavLink to="/">Home</NavLink>
           </li>
           <li>
-            <Link to="/endpoints">Endpoints</Link>
+            <NavLink to="/feed">Feed</NavLink>
+          </li>
+          <li>
+            <NavLink to="/endpoints">Endpoints</NavLink>
           </li>
         </ul>
       </nav>
 
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/feed" element={<FeedPage />} />
-        <Route path="/endpoints" element={<EndpointsPage />} />
-        <Route path="/endpoints/:uuid" element={<EndpointDetailPage />} />
+        <Route path="/" element={<HomePage handleClick={handleClick} />} />
+        <Route path="/feed" element={<FeedPage handleClick={handleClick} />} />
+        <Route path="/endpoints" element={<EndpointsPage handleClick={handleClick} />} />
+        <Route path="/endpoints/:uuid" element={<EndpointDetailPage handleClick={handleClick} />} />
       </Routes>
     </>
   );

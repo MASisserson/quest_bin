@@ -11,12 +11,9 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static('build'))
 
-app.post('/api/questbin/:uuid', async (req, res) => {
+app.all('/api/questbin/:uuid', async (req, res) => {
   const uuid = req.params.uuid;
   const { id: endpointId } = await pg_service.getEndpointIdByUuid(uuid);
-
-  console.log(req.query);
-
 
   const requestData = {
     body: req.body,
