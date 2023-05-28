@@ -31,7 +31,7 @@ const getAllRequests = async () => {
 };
 
 const getRequestById = async (requestId) => {
-  return await db.one('SELECT * FROM request WHERE id = $1', requestId);
+  return await db.one('SELECT request_data FROM request WHERE id = $1', requestId);
 };
 
 const getRequestsForEndpoint = async (endpointUuid) => {

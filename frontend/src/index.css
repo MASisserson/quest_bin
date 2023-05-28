@@ -45,8 +45,12 @@ html, body {
 } */
 
 .navigation {
-  /* border-bottom: 1px solid black; */
   padding: 0
+}
+
+.questbin {
+  color: white;
+  font-weight: bold;
 }
 
 .navigation ul{
@@ -79,8 +83,20 @@ html, body {
 .page-header {
   background-color: white;
   border-bottom: 1px solid #e7e7e9;
-
   padding: 20px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.page-header a {
+  background-color: #0ea5e9;
+  color: white;
+  display: inline-block;
+  /* font-size: 20px; */
+  /* margin: 70px auto 0; */
+  padding: 8px 18px;
+  text-decoration: none;
+
 }
 
 h2 {
@@ -230,4 +246,27 @@ h2 {
 
 .endpoint-detail-main p {
   margin-top: 8px;
+}
+
+.home-page-content {
+  text-align: center;
+}
+
+.home-page-content h1 {
+  margin: 120px 0 40px;
+  font-size: 56px;
+}
+
+.home-page-content p {
+  font-size: 28px;
+}
+
+.home-page-content a {
+  background-color: #0ea5e9;
+  color: white;
+  display: inline-block;
+  font-size: 20px;
+  margin: 70px auto 0;
+  padding: 20px 40px;
+  text-decoration: none;
 }
