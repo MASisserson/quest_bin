@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Routes, Route, Link } from "react-router-dom";
-import { useParams } from 'react-router-dom';
+import { Routes, Route, Link, useParams, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import JsonView from 'react18-json-view'
 import 'react18-json-view/src/style.css'
@@ -8,10 +7,25 @@ import 'react18-json-view/src/style.css'
 
 // HOME ====================================================================
 const HomePage = () => {
+  const navigate = useNavigate();
+
+  const handleClick = async () => {
+    try {
+      const response = await axios.get('/api/createuuid');
+      const uuid = response.data;
+      navigate(`/endpoints/${uuid}`);
+    } catch (error) {
+      console.log("ERROR:", error);
+    }
+  }
+
   return (
     <section className='home-page'>
       <section className='page-header'>
         <h2>Home</h2>
+      </section>
+      <section>
+        <Link to="#" onClick={handleClick}>Create Endpoint</Link>
       </section>
     </section>
   )
@@ -48,15 +62,23 @@ const FeedPage = () => {
 }
 
 const RequestList = ({ requests }) => {
+  if (requests.length === 0) {
+    return (
+      <section className='request-feed-list'>
+        <p>No requests yet</p>
+      </section>
+    )
+  }
+
   const requestLineItems = () => {
     return requests.map(request => {
-      const { id, uuid, endpoint_id, time_stamp, request_data } = request;
+      const { id, uuid, time_stamp, request_data } = request;
       const method = request_data.method;
       const timestamp = new Date(time_stamp).toLocaleString();
 
       return (
         <li key={id}>
-          <Link to={`/endpoints/${endpoint_id}`}>
+          <Link to={`/endpoints/${uuid}`}>
             <span className='method'>{method}</span>
             <span className='uuid'>{uuid}</span>
             <span>{timestamp}</span>
@@ -65,8 +87,6 @@ const RequestList = ({ requests }) => {
       );
     });
   };
-
-  console.log(requests);
 
   return (
     <ul className='request-feed-list'>
@@ -86,8 +106,6 @@ const EndpointsPage = () => {
       try {
         const response = await axios.get('/api/endpoints');
         setEndpoints(response.data);
-        console.log(response.data);
-
       } catch (error) {
         console.log("ERROR:", error);
       }
@@ -110,8 +128,8 @@ const EndpointList = ({ endpoints }) => {
   const endpointLineItems = () => {
     return endpoints.map(endpoint => {
       return (
-        <li >
-          <Link to={`/endpoints/${endpoint.id}`} key={endpoint.id}>
+        <li key={endpoint.id}>
+          <Link to={`/endpoints/${endpoint.uuid}`}>
             {endpoint.uuid}
           </Link>
         </li>
@@ -129,15 +147,15 @@ const EndpointList = ({ endpoints }) => {
 // ENDPOINT DETAIL =============================================================
 
 const EndpointDetailPage = () => {
-  const { id } = useParams();
+  const { uuid } = useParams();
   const [requests, setRequests] = useState([]);
   const [selectedRequest, setSelectedRequest] = useState(null);
-  const endpointURL = `${window.location.origin}/api/endpoints/${id}`;
+  const endpointURL = `${window.location.origin}/api/questbin/${uuid}`;
 
   useEffect(() => {
     const getEndpointRequests = async () => {
       try {
-        const response = await axios.get(`/api/endpoints/${id}/requests`);
+        const response = await axios.get(`/api/endpoints/${uuid}/requests`);
         console.log(response.data);
 
         setRequests(response.data);
@@ -147,7 +165,7 @@ const EndpointDetailPage = () => {
     }
 
     getEndpointRequests();
-  }, [id])
+  }, [uuid])
 
   const handleRequestClick = async (requestId) => {
     const request = await axios.get(`/api/requests/${requestId}`);
@@ -250,7 +268,7 @@ const App = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/feed" element={<FeedPage />} />
         <Route path="/endpoints" element={<EndpointsPage />} />
-        <Route path="/endpoints/:id" element={<EndpointDetailPage />} />
+        <Route path="/endpoints/:uuid" element={<EndpointDetailPage />} />
       </Routes>
     </>
   );

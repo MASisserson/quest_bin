@@ -120,6 +120,11 @@ h2 {
   background-color: #f9fafb;
 }
 
+.request-feed-list p{
+  padding: 24px;
+  margin: 0;
+}
+
 .request-feed-list .method{
   width: 100px;
 }
