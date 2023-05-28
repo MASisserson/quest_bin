@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Routes, Route, Link } from "react-router-dom";
-import { useParams } from 'react-router-dom';
+import { Routes, Route, Link, useParams, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import JsonView from 'react18-json-view'
 import 'react18-json-view/src/style.css'
@@ -8,9 +7,26 @@ import 'react18-json-view/src/style.css'
 
 // HOME ====================================================================
 const HomePage = () => {
+  const navigate = useNavigate();
+
+  const handleClick = async () => {
+    try {
+      const response = await axios.get('/api/createuuid');
+      const uuid = response.data;
+      navigate(`/endpoints/${uuid}`);
+    } catch (error) {
+      console.log("ERROR:", error);
+    }
+  }
+
   return (
     <section className='home-page'>
-      <h2>Home</h2>
+      <section className='page-header'>
+        <h2>Home</h2>
+      </section>
+      <section>
+        <Link to="#" onClick={handleClick}>Create Endpoint</Link>
+      </section>
     </section>
   )
 }
@@ -37,27 +53,43 @@ const FeedPage = () => {
 
   return (
     <section className='feed-page'>
-      <h2>Request Feed</h2>
+      <section className='page-header'>
+        <h2>Request Feed</h2>
+      </section>
       <RequestList requests={requests} />
     </section>
   )
 }
 
 const RequestList = ({ requests }) => {
+  if (requests.length === 0) {
+    return (
+      <section className='request-feed-list'>
+        <p>No requests yet</p>
+      </section>
+    )
+  }
+
   const requestLineItems = () => {
     return requests.map(request => {
+      const { id, uuid, time_stamp, request_data } = request;
+      const method = request_data.method;
+      const timestamp = new Date(time_stamp).toLocaleString();
+
       return (
-        <Link to={`/endpoints/${request.endpoint_id}`} key={request.id}>
-          <li key={request.id}>{request.request_data.method} {request.time_stamp} {request.uuid}</li>
-        </Link>
+        <li key={id}>
+          <Link to={`/endpoints/${uuid}`}>
+            <span className='method'>{method}</span>
+            <span className='uuid'>{uuid}</span>
+            <span>{timestamp}</span>
+          </Link>
+        </li>
       );
     });
   };
 
-  console.log(requests);
-
   return (
-    <ul>
+    <ul className='request-feed-list'>
       {requestLineItems()}
     </ul>
   );
@@ -74,8 +106,6 @@ const EndpointsPage = () => {
       try {
         const response = await axios.get('/api/endpoints');
         setEndpoints(response.data);
-        console.log(response.data);
-
       } catch (error) {
         console.log("ERROR:", error);
       }
@@ -86,9 +116,10 @@ const EndpointsPage = () => {
 
   return (
     <section className='endpoints-page'>
-      <h2>Endpoints</h2>
+      <section className='page-header'>
+        <h2>Endpoints</h2>
+      </section>
       <EndpointList endpoints={endpoints} />
-
     </section>
   )
 }
@@ -97,15 +128,17 @@ const EndpointList = ({ endpoints }) => {
   const endpointLineItems = () => {
     return endpoints.map(endpoint => {
       return (
-        <Link to={`/endpoints/${endpoint.id}`} key={endpoint.id}>
-          <li >{endpoint.uuid}</li>
-        </Link>
+        <li key={endpoint.id}>
+          <Link to={`/endpoints/${endpoint.uuid}`}>
+            {endpoint.uuid}
+          </Link>
+        </li>
       );
     });
   };
 
   return (
-    <ul>
+    <ul className='endpoint-list'>
       {endpointLineItems()}
     </ul>
   );
@@ -114,15 +147,15 @@ const EndpointList = ({ endpoints }) => {
 // ENDPOINT DETAIL =============================================================
 
 const EndpointDetailPage = () => {
-  const { id } = useParams();
+  const { uuid } = useParams();
   const [requests, setRequests] = useState([]);
   const [selectedRequest, setSelectedRequest] = useState(null);
-  const endpointURL = `${window.location.origin}/api/endpoints/${id}`;
+  const endpointURL = `${window.location.origin}/api/questbin/${uuid}`;
 
   useEffect(() => {
     const getEndpointRequests = async () => {
       try {
-        const response = await axios.get(`/api/endpoints/${id}/requests`);
+        const response = await axios.get(`/api/endpoints/${uuid}/requests`);
         console.log(response.data);
 
         setRequests(response.data);
@@ -132,7 +165,7 @@ const EndpointDetailPage = () => {
     }
 
     getEndpointRequests();
-  }, [id])
+  }, [uuid])
 
   const handleRequestClick = async (requestId) => {
     const request = await axios.get(`/api/requests/${requestId}`);
@@ -141,22 +174,29 @@ const EndpointDetailPage = () => {
 
   return (
     <section className='endpoint-detail-page'>
-      <section>
+      <section className='page-header'>
+        <h2>Endpoint Detail</h2>
+      </section>
+      <section className='current-endpoint'>
         <p>Your endpoint is:</p>
         <h3>{endpointURL}</h3>
       </section>
-      <section className='endpoint-detail-content'>
-        <section className='endpoint-detail-sidebar'>
-          <h2>Requests</h2>
-          <EndpointDetailSidebar
-            requests={requests}
-            onRequestClick={handleRequestClick}
-            selectedRequestId={selectedRequest ? selectedRequest.id : null}
-          />
+      <section className='endpoint-detail-container'>
+        <section className='endpoint-detail-header'>
+          <h2>Captured Requests</h2>
         </section>
-        <section className='endpoint-detail-main'>
-          <h3>Request Detail</h3>
-          <EndpointDetailContent request={selectedRequest} />
+
+        <section className='endpoint-detail-content'>
+          <section className='endpoint-detail-sidebar'>
+            <EndpointDetailSidebar
+              requests={requests}
+              onRequestClick={handleRequestClick}
+              selectedRequestId={selectedRequest ? selectedRequest.id : null}
+            />
+          </section>
+          <section className='endpoint-detail-main'>
+            <EndpointDetailContent request={selectedRequest} />
+          </section>
         </section>
       </section>
     </section>
@@ -165,7 +205,7 @@ const EndpointDetailPage = () => {
 
 const EndpointDetailSidebar = ({ requests, onRequestClick, selectedRequestId }) => {
   if (requests.length === 0) {
-    return <p>No requests.</p>
+    return <p>No requests</p>
   }
 
   const requestLineItems = () => {
@@ -178,15 +218,16 @@ const EndpointDetailSidebar = ({ requests, onRequestClick, selectedRequestId }) 
         <li
           key={id}
           onClick={() => onRequestClick(id)}
-          className={`request-item ${selectedRequestId === id ? 'request-selected' : ''}`}
+          className={`${selectedRequestId === id ? 'request-selected' : ''}`}
         >
-          {`${method} ${timestamp}`}
+          <span>{method}</span>
+          <span>{timestamp}</span>
         </li>)
     })
   }
 
   return (
-    <ul>
+    <ul className='endpoint-detail-list'>
       {requestLineItems()}
     </ul>
   );
@@ -199,7 +240,7 @@ const EndpointDetailContent = ({ request }) => {
 
   return (
     <div>
-      <JsonView src={request} />
+      <JsonView src={request} collapseObjectsAfterLength={13} />
     </div>
   )
 }
@@ -227,7 +268,7 @@ const App = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/feed" element={<FeedPage />} />
         <Route path="/endpoints" element={<EndpointsPage />} />
-        <Route path="/endpoints/:id" element={<EndpointDetailPage />} />
+        <Route path="/endpoints/:uuid" element={<EndpointDetailPage />} />
       </Routes>
     </>
   );

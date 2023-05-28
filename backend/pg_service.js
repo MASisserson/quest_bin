@@ -10,12 +10,20 @@ db.connect()
     console.log('ERROR:', error.message || error);
   });
 
+const insertEndpoint = async (uuid) => {
+  return await db.none('INSERT INTO endpoint (uuid) VALUES ($1)', uuid);
+};
+
 const getAllEndpoints = async () => {
   return await db.manyOrNone('SELECT id, uuid FROM endpoint');
 }
 
-const insertRequestData = async (uuid, requestData) => {
-  return await db.none('INSERT INTO request (endpoint_id, request_data) VALUES ($1, $2)', [uuid, requestData])
+const getEndpointIdByUuid = async (uuid) => {
+  return await db.one('SELECT id FROM endpoint WHERE uuid = $1', uuid);
+}
+
+const insertRequestData = async (endpointId, requestData) => {
+  return await db.none('INSERT INTO request (endpoint_id, request_data) VALUES ($1, $2)', [endpointId, requestData])
 };
 
 const getAllRequests = async () => {
@@ -26,8 +34,9 @@ const getRequestById = async (requestId) => {
   return await db.one('SELECT * FROM request WHERE id = $1', requestId);
 };
 
-const getRequestsForEndpoint = async (endpointId) => {
-  return await db.manyOrNone('SELECT id, time_stamp, request_data FROM request WHERE endpoint_id = $1 ORDER BY id DESC', endpointId);
+const getRequestsForEndpoint = async (endpointUuid) => {
+  // return await db.manyOrNone('SELECT id, time_stamp, request_data, uuid FROM request JOIN endpoint ON WHERE endpoint_id = $1 ORDER BY id DESC', endpointId);
+  return await db.manyOrNone('select request.id, time_stamp, request_data from request JOIN endpoint ON request.endpoint_id = endpoint.id WHERE uuid = $1 ORDER BY id DESC', endpointUuid);
 }
 
 module.exports = {
@@ -35,6 +44,8 @@ module.exports = {
   getAllRequests,
   getRequestById,
   getAllEndpoints,
-  getRequestsForEndpoint
+  getRequestsForEndpoint,
+  insertEndpoint,
+  getEndpointIdByUuid
 }
 
