@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Routes, Route, Link, useParams, useNavigate } from "react-router-dom";
+import { Routes, Route, Link, useParams, useNavigate, NavLink } from "react-router-dom";
 import axios from 'axios';
 import JsonView from 'react18-json-view'
 import 'react18-json-view/src/style.css'
@@ -270,13 +270,13 @@ const App = () => {
             QUESTBIN
           </li>
           <li>
-            <Link to="/">Home</Link>
+            <NavLink to="/">Home</NavLink>
           </li>
           <li>
-            <Link to="/feed">Feed</Link>
+            <NavLink to="/feed">Feed</NavLink>
           </li>
           <li>
-            <Link to="/endpoints">Endpoints</Link>
+            <NavLink to="/endpoints">Endpoints</NavLink>
           </li>
         </ul>
       </nav>

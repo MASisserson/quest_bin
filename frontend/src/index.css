@@ -61,9 +61,14 @@ html, body {
   padding: 0;
   padding:  18px 20px;
   background-color: #2A2E55;
+  text-decoration: none;
 }
 
-.navigation ul a{
+.navigation a.active {
+  text-decoration: underline;
+}
+
+.navigation a{
   text-decoration: none;
   color: white;
 }
@@ -71,6 +76,7 @@ html, body {
 .navigation ul a:hover{
   text-decoration: underline;
 }
+
 
 /* .home-page,
 .feed-page,
