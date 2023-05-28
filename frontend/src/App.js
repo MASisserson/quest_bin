@@ -50,14 +50,18 @@ const FeedPage = () => {
 const RequestList = ({ requests }) => {
   const requestLineItems = () => {
     return requests.map(request => {
+      const { id, uuid, endpoint_id, time_stamp, request_data } = request;
+      const method = request_data.method;
+      const timestamp = new Date(time_stamp).toLocaleString();
+
       return (
-        <li key={request.id}>
-          <Link to={`/endpoints/${request.endpoint_id}`} key={request.id}>
-            {request.request_data.method} {request.time_stamp} {request.uuid}
+        <li key={id}>
+          <Link to={`/endpoints/${endpoint_id}`}>
+            <span className='method'>{method}</span>
+            <span className='uuid'>{uuid}</span>
+            <span>{timestamp}</span>
           </Link>
         </li>
-
-
       );
     });
   };
@@ -96,10 +100,8 @@ const EndpointsPage = () => {
     <section className='endpoints-page'>
       <section className='page-header'>
         <h2>Endpoints</h2>
-
       </section>
       <EndpointList endpoints={endpoints} />
-
     </section>
   )
 }
@@ -108,15 +110,17 @@ const EndpointList = ({ endpoints }) => {
   const endpointLineItems = () => {
     return endpoints.map(endpoint => {
       return (
-        <Link to={`/endpoints/${endpoint.id}`} key={endpoint.id}>
-          <li >{endpoint.uuid}</li>
-        </Link>
+        <li >
+          <Link to={`/endpoints/${endpoint.id}`} key={endpoint.id}>
+            {endpoint.uuid}
+          </Link>
+        </li>
       );
     });
   };
 
   return (
-    <ul>
+    <ul className='endpoint-list'>
       {endpointLineItems()}
     </ul>
   );
@@ -152,22 +156,29 @@ const EndpointDetailPage = () => {
 
   return (
     <section className='endpoint-detail-page'>
-      <section>
+      <section className='page-header'>
+        <h2>Endpoint Detail</h2>
+      </section>
+      <section className='current-endpoint'>
         <p>Your endpoint is:</p>
         <h3>{endpointURL}</h3>
       </section>
-      <section className='endpoint-detail-content'>
-        <section className='endpoint-detail-sidebar'>
-          <h2>Requests</h2>
-          <EndpointDetailSidebar
-            requests={requests}
-            onRequestClick={handleRequestClick}
-            selectedRequestId={selectedRequest ? selectedRequest.id : null}
-          />
+      <section className='endpoint-detail-container'>
+        <section className='endpoint-detail-header'>
+          <h2>Captured Requests</h2>
         </section>
-        <section className='endpoint-detail-main'>
-          <h3>Request Detail</h3>
-          <EndpointDetailContent request={selectedRequest} />
+
+        <section className='endpoint-detail-content'>
+          <section className='endpoint-detail-sidebar'>
+            <EndpointDetailSidebar
+              requests={requests}
+              onRequestClick={handleRequestClick}
+              selectedRequestId={selectedRequest ? selectedRequest.id : null}
+            />
+          </section>
+          <section className='endpoint-detail-main'>
+            <EndpointDetailContent request={selectedRequest} />
+          </section>
         </section>
       </section>
     </section>
@@ -176,7 +187,7 @@ const EndpointDetailPage = () => {
 
 const EndpointDetailSidebar = ({ requests, onRequestClick, selectedRequestId }) => {
   if (requests.length === 0) {
-    return <p>No requests.</p>
+    return <p>No requests</p>
   }
 
   const requestLineItems = () => {
@@ -189,15 +200,16 @@ const EndpointDetailSidebar = ({ requests, onRequestClick, selectedRequestId }) 
         <li
           key={id}
           onClick={() => onRequestClick(id)}
-          className={`request-item ${selectedRequestId === id ? 'request-selected' : ''}`}
+          className={`${selectedRequestId === id ? 'request-selected' : ''}`}
         >
-          {`${method} ${timestamp}`}
+          <span>{method}</span>
+          <span>{timestamp}</span>
         </li>)
     })
   }
 
   return (
-    <ul>
+    <ul className='endpoint-detail-list'>
       {requestLineItems()}
     </ul>
   );
@@ -210,7 +222,7 @@ const EndpointDetailContent = ({ request }) => {
 
   return (
     <div>
-      <JsonView src={request} />
+      <JsonView src={request} collapseObjectsAfterLength={13} />
     </div>
   )
 }
