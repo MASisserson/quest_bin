@@ -1,4 +1,4 @@
 node_modules
 .env
 Todo.md
-/node_modules
+/build
