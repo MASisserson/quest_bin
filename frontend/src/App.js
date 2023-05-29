@@ -157,8 +157,7 @@ const EndpointDetailPage = ({ handleClick }) => {
     const getEndpointRequests = async () => {
       try {
         const response = await axios.get(`/api/endpoints/${uuid}/requests`);
-        console.log(response.data);
-
+        // console.log(response.data);
         setRequests(response.data);
       } catch (error) {
         console.log("ERROR:", error);
@@ -170,6 +169,8 @@ const EndpointDetailPage = ({ handleClick }) => {
 
   const handleRequestClick = async (requestId) => {
     const request = await axios.get(`/api/requests/${requestId}`);
+    console.log(request);
+
     setSelectedRequest(request.data);
   };
 
@@ -212,7 +213,9 @@ const EndpointDetailSidebar = ({ requests, onRequestClick, selectedRequestId }) 
 
   const requestLineItems = () => {
     return requests.map(request => {
+
       const { id, time_stamp, request_data } = request;
+      console.log("ID", id, selectedRequestId);
       const method = request_data.method;
       const timestamp = new Date(time_stamp).toLocaleString();
 
@@ -239,6 +242,8 @@ const EndpointDetailContent = ({ request }) => {
   if (!request) {
     return <p>Select a request to see details</p>
   }
+
+  delete request.id;
 
   return (
     <div>
